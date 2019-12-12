@@ -10,8 +10,8 @@ import os
 import time
 import requests
 import sys
-from bs4 import BeautifulSoup 
-
+from bs4 import BeautifulSoup as soup
+from urllib.request import urlopen as ureq
 
 def main():
     for year in range(2000,2019):
@@ -20,6 +20,12 @@ def main():
                 url = "https://en.tutiempo.net/climate/0{}-{}/ws-432950.html".format(month,year)
             else:
                 url = "https://en.tutiempo.net/climate/{}-{}/ws-432950.html".format(month,year)
+            
+            uClient = ureq(url)
+            page_html=uClient.read()
+            uClient.close()
+            page_soup = soup(page_html,"html.parser")
+            
             texts = requests.get(url)
             text_utf = texts.text.encode("utf=8")
     
