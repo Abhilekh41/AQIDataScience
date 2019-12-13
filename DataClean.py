@@ -13,6 +13,7 @@ import sys
 from bs4 import BeautifulSoup as soup
 from urllib.request import urlopen as ureq
 import pandas as pd
+from pandas import ExcelWriter
 def main():
     
     x_file = open("Data/Html_Data/2016/1.html","r")
@@ -24,19 +25,20 @@ def main():
     for hr in table.findAll('th'):
         header.append(hr.text)
     header.pop()
-    print(len(header))
     for row in table.findAll('tr'):
         cells = row.findAll('td')
         new_data = []
         for cell in cells:
             new_data.append(cell.text)
-        print(len(new_data))
         data.append(new_data)
-    print(header)
-    #print(data)
     sys.stdout.flush()
     df = pd.DataFrame(data,columns = header)
     print(df)
+    
+    writer = ExcelWriter('Data/Html_Data/2016/1/PythonExport.xlsx')
+    df.to_excel(writer,'Sheet5')
+    writer.save()
+    
 
 if __name__ == '__main__':
     main()
