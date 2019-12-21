@@ -23,7 +23,7 @@ def main():
             page_soup = soup(x_file,"html.parser")
             data = []
             header = []
-            contentMapList = [{"nthi":".",
+            contentMapList = [{
                            "ntjk":"1",
                            "ntrs":"2",
                            "ntza":"3",
