@@ -25,6 +25,19 @@ def main():
          "433710":"Thiruvananthapuram",
          "423480":"Jaipur"}
     
+    monthNames = {1:"January",
+             2:"Febuary",
+             3:"March",
+             4:"April",
+             5:"May",
+             6:"June",
+             7:"July",
+             8:"August",
+             9:"September",
+             10:"October",
+             11:"November",
+             12:"December"}
+    
     for codes in citiesAndCode:
         for year in range(2000,2019):
             for month in range(1,13):
@@ -111,13 +124,18 @@ def main():
                 sys.stdout.flush()
                 df = pd.DataFrame(data,columns = header)
                 #print(df)
-                excel_file_location = "{}/Excel/{}".format(citiesAndCode.get(codes),year)
+                excel_file_location = "{}/Excel".format(citiesAndCode.get(codes))
                 if not os.path.exists(excel_file_location):
                     os.makedirs(excel_file_location)
-            
-                file_to_be_written = excel_file_location+"/{}.xlsx".format(month)
-                df.to_excel(file_to_be_written)
-    
+                
+                file_to_be_written = excel_file_location+"/{}.xlsx".format(year)
+                writer = pd.ExcelWriter(file_to_be_written,engine= 'xlsxwriter')
+                print(month)
+                sheetName= monthNames[month]
+                print(sheetName)
+                df.to_excel(writer,sheet_name=sheetName)
+                writer.save()
+                writer.close()
     
        
         
