@@ -39,7 +39,7 @@ def main():
              11:"November",
              12:"December"}
     
-    for codes in citiesAndCode:
+    for codes, cities in citiesAndCode.items():
         for year in range(2000,2019):
             excel_file_location = "{}/Excel".format(citiesAndCode.get(codes))
             if not os.path.exists(excel_file_location):
@@ -139,6 +139,7 @@ def main():
                 #print(sheetName)
                 df.to_excel(writer,sheet_name=sheetName)
                 writer.save()
+                print("Appended data for {0} - {1} - {2}".format(year, sheetName, cities))
             
                 
     
