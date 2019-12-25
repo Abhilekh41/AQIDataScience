@@ -15,6 +15,7 @@ from urllib.request import urlopen as ureq
 import pandas as pd
 import json
 import csv
+from openpyxl import load_workbook
 def main():
     citiesAndCode  =  {"421820":"Delhi",
          "428090":"Kolkata",
@@ -40,6 +41,10 @@ def main():
     
     for codes in citiesAndCode:
         for year in range(2000,2019):
+            excel_file_location = "{}/Excel".format(citiesAndCode.get(codes))
+            if not os.path.exists(excel_file_location):
+                os.makedirs(excel_file_location) 
+            file_to_be_written = excel_file_location+"/{}.xlsx".format(year)
             for month in range(1,13):
                 html_file_location= "{}/Html_Data/{}/{}.html".format(citiesAndCode.get(codes),year,month)
                 x_file = open(html_file_location,"r")
@@ -123,19 +128,19 @@ def main():
                     data.append(new_data)
                 sys.stdout.flush()
                 df = pd.DataFrame(data,columns = header)
+                writer = pd.ExcelWriter(file_to_be_written,engine= 'openpyxl')
                 #print(df)
-                excel_file_location = "{}/Excel".format(citiesAndCode.get(codes))
-                if not os.path.exists(excel_file_location):
-                    os.makedirs(excel_file_location)
-                
-                file_to_be_written = excel_file_location+"/{}.xlsx".format(year)
-                writer = pd.ExcelWriter(file_to_be_written,engine= 'xlsxwriter')
-                print(month)
+                if os.path.exists(file_to_be_written):    
+                    book = load_workbook(file_to_be_written) 
+                    writer.book = book
+                    writer.sheets = dict((ws.title, ws) for ws in book.worksheets)
+                #print(month)
                 sheetName= monthNames[month]
-                print(sheetName)
+                #print(sheetName)
                 df.to_excel(writer,sheet_name=sheetName)
                 writer.save()
-                writer.close()
+            
+                
     
        
         
