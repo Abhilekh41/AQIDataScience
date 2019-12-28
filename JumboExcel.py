@@ -11,7 +11,7 @@ from openpyxl import load_workbook
 import os
 
 def main():
-    sheets = {"January",
+    sheets = ["January",
              "Febuary",
              "March",
              "April",
@@ -22,22 +22,32 @@ def main():
              "September",
              "October",
              "November",
-             "December"}
-    file_to_be_written = "/Users/abhilekhsahay/AQIDataScience/jumboExcel.xlsx"
-    cities = ['Delhi','Bangalore','Chennai','Patna','Jaipur','Hyderabad','Thiruvananthapuram','Kolkata']
+             "December"]
+    print(sheets)
+    file_to_be_written = "jumboExcel.xlsx"
+    cities = ['Delhi','Kolkata','Chennai','Patna','Bangalore','Hyderabad','Thiruvananthapuram','Jaipur']
     for city in cities:
-        for year in range(2000,2001):
+        for year in range(2000,2019):
+            finalDataFrame=pd.DataFrame()
+            dataFrameList = []
+            #print(sheets)
             for sheet in sheets:
-                file_to_be_read = "/Users/abhilekhsahay/AQIDataScience/{}/Excel/{}.xlsx".format(city,2000)
+                file_to_be_read = "{}/Excel/{}.xlsx".format(city,year)
                 data = pd.read_excel(file_to_be_read,sheet_name = sheet)
-                print(data)
-                dataFrame = pd.concat(data[frame] for frame in data.keys())
-                writer = pd.ExcelWriter(file_to_be_written,engine= 'openpyxl')
-                if os.path.exists(file_to_be_written):    
-                    book = load_workbook(file_to_be_written) 
-                    writer.book = book
-                dataFrame.to_excel(writer,sheet_name="Data")
-                writer.save()
+                #print(len(data))
+                
+                data = data.drop([data.index[0],data.index[len(data)-2],data.index[len(data)-1]])
+                data['Month'] = sheet
+                data['Year'] = year
+                data['City'] = city
+                dataFrameList.append(data)
+            finalDataFrame = pd.concat(dataFrameList)
+            writer = pd.ExcelWriter(file_to_be_written,engine= 'openpyxl')
+            if os.path.exists(file_to_be_written):    
+                book = load_workbook(file_to_be_written) 
+                writer.book = book
+            finalDataFrame.to_excel(writer,sheet_name="Data")
+            writer.save()
                 
 
     
